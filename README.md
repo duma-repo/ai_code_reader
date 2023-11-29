@@ -14,7 +14,7 @@
 
 ### 运行
 
-修改 gpt_server.py
+1. 修改 gpt_server.py
 
 ```python
 client = OpenAI(base_url='xxx', api_key='sk-xxx')
@@ -24,6 +24,18 @@ model_name = 'gpt-3.5-turbo-1106'
 - 首先设置你的api_key
 - 如果你用的是官方api_key，可以去掉`base_url`参数，如果是国内访问，自己设置代理
 - 如果你用的是国内转发的api_key，`base_url`设置为国内接口地址
+
+2. 打开 main.py，修改项目路径
+
+```python
+prj_dir = '项目绝对路径'
+```
+
+3. 运行 main.py
+
+```shell
+python main.py
+```
 
 ### 注意事项
 
