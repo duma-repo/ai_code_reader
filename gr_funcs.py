@@ -50,20 +50,17 @@ def view_prj_file(selected_file):
 
 
 def gen_prj_summary_prompt():
-    with open('tmp.txt', 'r') as f:
-        res = f.read()
-    return res
-    # prefix_prompt = '这里有一个代码项目，里面的每个文件的功能已经被总结过了。' \
-    #                 '你需要根据每个文件的总结内容，做一个整体总结，简单明了，突出重点。' \
-    #                 '用Markdown格式返回，必要时可以使用emoji表情。每个文件路径以及总结如下：\n'
-    #
-    # prompt = prefix_prompt
-    # for file_path, file_summary in llm_response.items():
-    #     file_prompt = f'文件名：{file_path}\n文件总结：{file_summary} \n\n'
-    #     prompt = f'{prompt}{file_prompt}'
-    #
-    # suffix_prompt = '你做的是类似"README"对整个项目的总结，而不需要再对单个文件做总结。"'
-    # return f'{prompt}{suffix_prompt}'
+    prefix_prompt = '这里有一个代码项目，里面的每个文件的功能已经被总结过了。' \
+                    '你需要根据每个文件的总结内容，做一个整体总结，简单明了，突出重点。' \
+                    '用Markdown格式返回，必要时可以使用emoji表情。每个文件路径以及总结如下：\n'
+
+    prompt = prefix_prompt
+    for file_path, file_summary in llm_response.items():
+        file_prompt = f'文件名：{file_path}\n文件总结：{file_summary} \n\n'
+        prompt = f'{prompt}{file_prompt}'
+
+    suffix_prompt = '你做的是类似"README"对整个项目的总结，而不需要再对单个文件做总结。"'
+    return f'{prompt}{suffix_prompt}'
 
 
 def prj_chat(user_in_text: str, prj_chatbot: list):
