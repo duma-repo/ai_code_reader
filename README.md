@@ -2,7 +2,8 @@
 
 欢迎大家关注我的公众号**渡码**，大家使用过程中遇到问题，可以在公众号向我提问。AI相关项目、优秀资料都会在公众号首发。
 
-![](screen1.png)
+
+<img  src="./docs/images/screen1.png">
 
 ### 安装依赖
 
@@ -50,7 +51,6 @@ Bilibili：https://space.bilibili.com/494605864
 
 微信公众号：[渡码](http://mp.weixin.qq.com/profile?src=3&timestamp=1663979948&ver=1&signature=wcyNF3yu1W0bMvEanLaDxbZWIzr4fHOGzS3*iP9FBJmGgREoKU6rifDbYefvfJNkEK2r*hS6httmcHBrvtFoVg==)
 
-![](duma.jpg)
 
 
-
+<img width="240" src="./docs/images/duma.jpg">
