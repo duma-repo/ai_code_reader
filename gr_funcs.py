@@ -1,10 +1,13 @@
 import os
+import re
+import time
 
 import gradio as gr
 import utils
 import gpt_server
 
 llm_response = {}
+
 
 def analyse_project(prj_path, progress=gr.Progress()):
     global llm_response
@@ -26,6 +29,27 @@ def analyse_project(prj_path, progress=gr.Progress()):
         llm_response[file_name] = response
 
     return '阅读完成'
+
+
+def get_lang_from_file(file_name):
+    if file_name.endswith('.py'):
+        return 'python'
+    elif file_name.endswith('.md'):
+        return 'markdown'
+    elif file_name.endswith('.json'):
+        return 'json'
+    elif file_name.endswith('.html'):
+        return 'html'
+    elif file_name.endswith('.css'):
+        return 'css'
+    elif file_name.endswith('.yaml'):
+        return 'yaml'
+    elif file_name.endswith('.sh'):
+        return 'shell'
+    elif file_name.endswith('.js'):
+        return 'javascript'
+
+    return None
 
 
 def view_prj_file(selected_file):
@@ -84,3 +108,30 @@ def prj_chat(user_in_text: str, prj_chatbot: list):
 
 def clear_textbox():
     return ''
+
+
+def view_uncmt_file(selected_file):
+    lang = get_lang_from_file(selected_file)
+    return gr.update(language=lang, value=(selected_file,)), gr.update(variant='primary', interactive=True, value='添加注释'), gr.update(visible=False)
+
+
+def ai_comment(btn_name, selected_file):
+    if btn_name != '添加注释':
+        yield btn_name, gr.update(visible=False)
+    else:
+        yield '注释添加中...', gr.update(visible=False)
+
+        lang = get_lang_from_file(selected_file)
+        with open(selected_file, 'r', encoding='utf-8') as f:
+            file_content = f.read()
+        sys_prompt = "你是一位资深的程序员，能够读懂任何代码，并为其增加中文注释，如果是函数，需要为函数docstrings格式的注释。" \
+                     "直接返回修改的结果，不需要其他额外的解释。"
+        user_prompt = f"源代码：\n```{file_content}```"
+
+        response = gpt_server.request_llm(sys_prompt, [(user_prompt, None)])
+        res_code = response
+        if response.startswith('```') and response.endswith('```'):
+            code_blocks = re.findall(r'```(?:\w+)?\n(.*?)\n```', response, re.DOTALL)
+            res_code = code_blocks[0]
+
+        yield '添加注释', gr.update(visible=True, language=lang, value=res_code)
