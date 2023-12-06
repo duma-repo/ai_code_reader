@@ -1,4 +1,7 @@
 from openai import OpenAI
+from modelscope import AutoTokenizer, AutoModel, snapshot_download
+import os
+
 
 # 如果是国内转发的API，则修改 base_url
 client = OpenAI(base_url='xxx',
@@ -9,6 +12,8 @@ model_name = 'gpt-3.5-turbo-1106'
 def request_llm(sys_prompt: str, user_prompt: list, server_name='openai', stream=False):
     if server_name == 'openai':
         return request_openai(sys_prompt, user_prompt, stream)
+    elif server_name == 'chatglm3-6b':
+        return request_local_llm(sys_prompt, user_prompt, server_name, stream)
     else:
         pass
 
@@ -50,3 +55,29 @@ def request_openai(sys_prompt, user_prompt: list, stream=False):
     res = get_response(response, stream)
 
     return res
+
+
+def request_local_llm(sys_prompt, user_prompt: list, model_name: str, stream=False):
+    if model_name == 'chatglm3-6b':
+        os.environ['MODELSCOPE_CACHE'] = '模型下载路径'
+        model_dir = snapshot_download("ZhipuAI/chatglm3-6b", revision="v1.0.0")
+        tokenizer = AutoTokenizer.from_pretrained(model_dir, trust_remote_code=True)
+        model = AutoModel.from_pretrained(model_dir, trust_remote_code=True).half().cuda()
+        model = model.eval()
+    else:
+        tokenizer = None
+        model = None
+
+    query, _ = user_prompt[-1]
+    query = f'{sys_prompt}\n\n{query}'
+    history = []
+    for user_content, assistant_content in user_prompt[:-1]:
+        history.append({'role': 'user', 'content': user_content})
+        history.append({'role': 'assistant', 'content': assistant_content})
+
+    if stream:
+        response, _ = model.stream_chat(tokenizer, query, history=history)
+    else:
+        response, _ = model.chat(tokenizer, query, history=history)
+
+    return response
