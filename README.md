@@ -2,7 +2,7 @@
 
 欢迎大家关注我的公众号**渡码**，大家使用过程中遇到问题，可以在公众号向我提问。AI相关项目、优秀资料都会在公众号首发。
 
-**公众号回复`AI助手`获取免费共享的`chatgpt api key`国内直接用，免魔法**
+**公众号回复`key`获取免费共享的`chatgpt api key`国内直接用，免魔法**
 
 需要跑本地大模型的朋友，切到`v1.2`分支 https://github.com/duma-repo/ai_code_reader/tree/v1.2
 
