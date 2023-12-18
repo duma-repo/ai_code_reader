@@ -8,6 +8,8 @@
 
 <img  src="./docs/images/screen1.png">
 
+这是运行本地大模型的分支代码，请详细看文档。
+
 ### 安装依赖
 
 - python 3.10
@@ -15,6 +17,25 @@
 - gradio                    4.4.1
 
 尤其是python和gradio的版本必须装对，不然无法成功运行。
+
+### 本地大模型配置
+
+1. 目前代码里只支持 chatglm3-6b（其他大模型同理，大家可以自己集成）
+   
+2. 修改 `gpt_server.py` 文件，第62行，大模型的存储目录（空间要充足）
+
+```python
+os.environ['MODELSCOPE_CACHE'] = '模型下载路径'
+```
+
+3. 需要调用大模型的地方，修改代码
+```python
+gpt_server.request_llm(sys_prompt, [(user_prompt, None)])
+```
+改为
+```python
+gpt_server.request_llm(sys_prompt, [(user_prompt, None)], 'chatglm3-6b')
+```
 
 ### 运行
 

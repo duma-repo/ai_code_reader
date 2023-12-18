@@ -1,0 +1,11 @@
+transformers==4.32.0
+accelerate
+tiktoken
+einops
+scipy
+transformers_stream_generator==0.0.4
+peft
+gradio==4.4.1
+modelscope
+auto-gptq
+optimum
