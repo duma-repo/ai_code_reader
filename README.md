@@ -4,59 +4,31 @@
 
 **公众号回复`key`获取免费共享的`chatgpt api key`国内直接用，免魔法**
 
-需要跑本地大模型的朋友，切到`v1.2`分支 https://github.com/duma-repo/ai_code_reader/tree/v1.2
-
 <img  src="./docs/images/screen1.png">
-
-这是运行本地大模型的分支代码，请详细看文档。
 
 ### 安装依赖
 
-- python 3.10
-- openai                    1.3.3
-- gradio                    4.4.1
+python 版本需要 3.10 或以上
 
-尤其是python和gradio的版本必须装对，不然无法成功运行。
-
-### 本地大模型配置
-
-1. 目前代码里只支持 chatglm3-6b（其他大模型同理，大家可以自己集成）
-   
-2. 修改 `gpt_server.py` 文件，第62行，大模型的存储目录（空间要充足）
-
-```python
-os.environ['MODELSCOPE_CACHE'] = '模型下载路径'
+如果用 ChatGPT，执行下面命令安装依赖包
+```shell
+pip install -r requirements.txt
 ```
 
-3. 需要调用大模型的地方，修改代码
-```python
-gpt_server.request_llm(sys_prompt, [(user_prompt, None)])
+如果用开源大模型，在`llms`目录安装对应的依赖，如：`ChatGLM3`执行
+```shell
+pip install -r llms/requirements_chatglm3.txt
 ```
-改为
-```python
-gpt_server.request_llm(sys_prompt, [(user_prompt, None)], 'chatglm3-6b')
-```
+
+### 修改配置文件
+
+项目根目录下有个`.env.tpl`模板配置文件。将其重命名文`.env`文件，修改里面的配置项即可。
+
+每个配置项在文件里都有详细说明，按照说明配置即可。
+
+如果你想接入自己的大模型，在`llms`目录中自定义一个类，继承`LLM`类，实现`request`函数即可。
 
 ### 运行
-
-1. 修改 gpt_server.py
-
-```python
-client = OpenAI(base_url='xxx', api_key='sk-xxx')
-model_name = 'gpt-3.5-turbo-1106'
-```
-
-- 首先设置你的api_key
-- 如果你用的是官方api_key，可以去掉`base_url`参数，如果是国内访问，自己设置代理
-- 如果你用的是国内转发的api_key，`base_url`设置为国内接口地址
-
-2. 打开 main.py，修改项目路径
-
-```python
-prj_dir = '项目绝对路径'
-```
-
-3. 运行 main.py
 
 ```shell
 python main.py
