@@ -1,8 +1,13 @@
 
 push:
 	git add .
-	git commit -m "update"
+	@if [ "$(msg)" != "" ]; then \
+		git commit -m "$(msg)"; \
+	else \
+		git commit -m "update"; \
+	fi
 	git push --set-upstream origin master
+
 
 dev:
 	poetry run python main.py
