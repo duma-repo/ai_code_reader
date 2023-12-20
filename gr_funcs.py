@@ -2,6 +2,8 @@ import re
 import time
 
 import gradio as gr
+from loguru import logger
+
 import utils
 import gpt_server
 
@@ -12,10 +14,15 @@ def analyse_project(prj_path, progress=gr.Progress()):
     global llm_response
     llm_response = {}
     file_list = utils.get_all_files_in_folder(prj_path)
+    file_list = list(file_list)
+    logger.info(f'项目路径：{prj_path}')
+    logger.info(f'项目文件数：{len(file_list)}')
+    logger.info(f'项目文件列表：{file_list}')
 
     for i, file_name in enumerate(file_list):
         relative_file_name = file_name.replace(prj_path, '.')
         progress(i / len(file_list), desc=f'正在阅读：{relative_file_name}')
+        logger.info(f'正在阅读：{relative_file_name}')
 
         with open(file_name, 'r', encoding='utf-8') as f:
             file_content = f.read()
