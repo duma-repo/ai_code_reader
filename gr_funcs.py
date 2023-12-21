@@ -17,8 +17,6 @@ def analyse_project(prj_path, progress=gr.Progress()):
     file_list = utils.get_all_files_in_folder(prj_path)
     file_list = list(file_list)
     logger.info(f'项目路径：{prj_path}')
-    logger.info(f'项目文件数：{len(file_list)}')
-    logger.info(f'项目文件列表：{file_list}')
 
     for i, file_name in enumerate(file_list):
         relative_file_name = file_name.replace(prj_path, '.')
