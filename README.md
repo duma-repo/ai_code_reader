@@ -6,6 +6,10 @@
 
 <img  src="./docs/images/screen1.png">
 
+需要 ChatGPT+本地代码库（embedding）的小伙伴，切换到 v2.0 分支。
+
+假期赶着回家开发得比较急，还有很多不完善的地方，节后慢慢更新。
+
 ### 安装依赖
 
 python 版本需要 3.10 或以上
