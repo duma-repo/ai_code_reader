@@ -2,6 +2,14 @@ import re
 import time
 
 import gradio as gr
+from langchain.text_splitter import Language, RecursiveCharacterTextSplitter
+from langchain_community.document_loaders.generic import GenericLoader
+from langchain_community.document_loaders.parsers import LanguageParser
+from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_community.vectorstores.chroma import Chroma
+
+import config
+import langchain_server
 import utils
 import gpt_server
 
@@ -165,3 +173,83 @@ def change_code_lang(btn_name, raw_code, to_lang):
         res = next(response)
 
         yield '转换', gr.update(visible=True, value=res)
+
+
+def prj_embedding(prj_path, progress=gr.Progress()):
+    file_list = utils.get_all_files_in_folder(prj_path)
+    prj_name = utils.get_prj_name(prj_path)
+    vector_db_dir = f'{config.PRJ_VECTOR_DB}/{prj_name}'
+
+    loader = GenericLoader.from_filesystem(
+        prj_path,
+        glob="**/*",
+        suffixes=[".py"],
+        parser=LanguageParser(language=Language.PYTHON, parser_threshold=500),
+    )
+    documents = loader.load()
+
+    progress(0.2, desc=f'加载 {len(documents)} 个文件数')
+    time.sleep(0.7)
+
+    python_splitter = RecursiveCharacterTextSplitter.from_language(
+        language=Language.PYTHON, chunk_size=2000, chunk_overlap=200
+    )
+    texts = python_splitter.split_documents(documents)
+
+    progress(0.3, desc=f'将源文件切分成 {len(texts)} 代码块')
+    time.sleep(0.7)
+
+    progress(0.6, desc=f'代码块 embedding')
+
+    db = Chroma.from_documents(texts, OpenAIEmbeddings(disallowed_special=()), persist_directory=vector_db_dir)
+    retriever = db.as_retriever(
+        search_type="mmr",  # Also test "similarity"
+        search_kwargs={"k": 8},
+    )
+
+    langchain_server.update_qa(retriever)
+
+    # for i, file_name in enumerate(file_list):
+    #     relative_file_name = file_name.replace(prj_path, '.')
+    #     time.sleep(0.1)
+    #     progress(i / len(file_list), desc=f'正在 embedding：{relative_file_name}')
+    #
+    progress(1, desc=f'完成 embedding')
+    time.sleep(0.5)
+
+    return f'向量数据库位置: {config.PRJ_VECTOR_DB}/{prj_name}'
+
+
+def reload_prg_embedding(prj_path, progress=gr.Progress()):
+    prj_name = utils.get_prj_name(prj_path)
+    vector_db_dir = f'{config.PRJ_VECTOR_DB}/{prj_name}'
+
+    progress(0.5, desc=f'加载向量数据库')
+    time.sleep(0.1)
+
+    db = Chroma(persist_directory=vector_db_dir, embedding_function=OpenAIEmbeddings(disallowed_special=()))
+    retriever = db.as_retriever(
+        search_type="mmr",  # Also test "similarity"
+        search_kwargs={"k": 8},
+    )
+
+    langchain_server.update_qa(retriever)
+
+    progress(1, desc=f'加载完成')
+    time.sleep(0.5)
+
+    return f'向量数据库位置: {config.PRJ_VECTOR_DB}/{prj_name}'
+
+
+def chat_code_chat(question, chat_code_cb: list):
+    chat_code_cb.append([question, ''])
+    yield chat_code_cb
+
+    prompt = f'请用中文和我交流\n{question}'
+    response = langchain_server.request_llm(prompt)
+
+    # todo 这里是模拟流式， 后面会实现langchain版流式结果返回
+    for chunk_content in response:
+        chat_code_cb[-1][1] = f'{chat_code_cb[-1][1]}{chunk_content}'
+        time.sleep(0.02)
+        yield chat_code_cb

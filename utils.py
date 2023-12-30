@@ -16,3 +16,15 @@ def get_all_files_in_folder(folder_path):
             if not file.startswith('.'):
                 file_list.append(os.path.join(root, file))
     return file_list
+
+
+def get_prj_name(file_path):
+    return os.path.basename(os.path.normpath(file_path))
+
+
+def dir_exists(parent_dir, sub_dir):
+    # 完整的路径
+    full_path = os.path.join(parent_dir, sub_dir)
+
+    # 检查这个路径是否存在，并且是一个目录
+    return os.path.exists(full_path) and os.path.isdir(full_path)

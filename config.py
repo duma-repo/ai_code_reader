@@ -11,6 +11,7 @@ model_list = [
     'Qwen-14B-Chat-Int4'
 ]
 
+PRJ_VECTOR_DB = './temp_data/prj_vector_db'
 
 def init_config():
     # 创建一个配置解析器对象

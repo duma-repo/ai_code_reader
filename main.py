@@ -5,6 +5,7 @@ import gradio as gr
 
 import config
 import gr_funcs
+import utils
 
 
 def main(prj_dir):
@@ -27,6 +28,23 @@ def main(prj_dir):
             model_selector = gr.Dropdown(choices=config.model_list, container=False, elem_id='box_shad')
         with gr.Row():
             prj_fe = gr.FileExplorer(label='项目文件', root=prj_dir, file_count='single', scale=1)
+
+        with gr.Accordion(label='chat-code', open=True):
+            prj_name = utils.get_prj_name(prj_dir)
+            is_embedding = utils.dir_exists(config.PRJ_VECTOR_DB, prj_name)
+
+            with gr.Row():
+                if is_embedding:
+                    chat_code_reload_btn = gr.Button('加载上次结果', variant='primary')
+
+                chat_code_load_btn = gr.Button('加载项目源码', variant='primary' if not is_embedding else 'secondary')
+
+            # chat_code_label = gr.Label(label="embedding进度", value='等待加载...', visible=False)
+            chat_code_label = gr.Text(label="完成项目embedding", visible=False)
+            chat_code_cb = gr.Chatbot(label='Chat-Code', elem_id='box_shad')
+            with gr.Row():
+                chat_code_cb_input = gr.Text(container=False, scale=3, elem_id='box_shad')
+                chat_code_cb_send_btn = gr.Button('发送', scale=1, variant='primary')
 
         with gr.Accordion('阅读项目', open=False):
             with gr.Row():
@@ -63,6 +81,8 @@ def main(prj_dir):
                         with gr.Row():
                             gr.Text(container=False, scale=2, elem_id='paper_tb', placeholder='请输入...',)
                             gr.Button('发送', min_width=50, scale=1, variant='primary')
+
+
 
         with gr.Accordion(label='代码注释', open=False, elem_id='code_cmt'):
             code_cmt_btn = gr.Button('选择一个源文件', variant='secondary', interactive=False)
@@ -105,6 +125,17 @@ def main(prj_dir):
         code_lang_ch_btn.click(gr_funcs.change_code_lang,
                                inputs=[code_lang_ch_btn, raw_lang_code, to_lang],
                                outputs=[code_lang_ch_btn, code_lang_changed_md])
+
+        # chat code
+        chat_code_load_btn.click(lambda: gr.update(visible=True), outputs=[chat_code_label])
+        chat_code_load_btn.click(gr_funcs.prj_embedding, inputs=[prj_name_tb], outputs=[chat_code_label])
+
+        chat_code_cb_send_btn.click(lambda: '', outputs=[chat_code_cb_input])
+        chat_code_cb_send_btn.click(gr_funcs.chat_code_chat, inputs=[chat_code_cb_input, chat_code_cb], outputs=[chat_code_cb])
+
+        if is_embedding:
+            chat_code_reload_btn.click(lambda: gr.update(visible=True), outputs=[chat_code_label])
+            chat_code_reload_btn.click(gr_funcs.reload_prg_embedding, inputs=[prj_name_tb], outputs=[chat_code_label])
 
     demo.launch(share=False)
 
