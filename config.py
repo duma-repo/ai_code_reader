@@ -11,6 +11,34 @@ model_list = [
     'Qwen-14B-Chat-Int4'
 ]
 
+black_file_pattern_list = (
+    ".git/",
+    ".idea/",
+    ".vscode/",
+    "__pycache__/",
+    "venv/",
+    ".env",
+    ".gitignore",
+    "README.md",
+    "LICENSE",
+    ".toml",
+    ".lock",
+    ".log",
+    ".doc",
+    ".txt",
+    ".pdf",
+    ".yaml",
+    ".yml",
+    ".json",
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".gif",
+    ".md",
+    "Dockerfile",
+    "dockerfile",
+)
+
 
 def init_config():
     # 创建一个配置解析器对象

@@ -2,8 +2,11 @@ import re
 import time
 
 import gradio as gr
+from loguru import logger
+
 import utils
 import gpt_server
+from cache import llm_file_cache
 
 llm_response = {}
 
@@ -12,10 +15,21 @@ def analyse_project(prj_path, progress=gr.Progress()):
     global llm_response
     llm_response = {}
     file_list = utils.get_all_files_in_folder(prj_path)
+    file_list = list(file_list)
+    logger.info(f'项目路径：{prj_path}')
 
     for i, file_name in enumerate(file_list):
         relative_file_name = file_name.replace(prj_path, '.')
         progress(i / len(file_list), desc=f'正在阅读：{relative_file_name}')
+
+        cache_resp = llm_file_cache.get(file_name, 'analyse')
+
+        if cache_resp is not None:
+            logger.info(f'从缓存中读取结果：{relative_file_name}')
+            llm_response[file_name] = cache_resp
+            continue
+
+        logger.info(f'正在阅读：{relative_file_name}')
 
         with open(file_name, 'r', encoding='utf-8') as f:
             file_content = f.read()
@@ -26,6 +40,9 @@ def analyse_project(prj_path, progress=gr.Progress()):
 
         response = gpt_server.request_llm(sys_prompt, [(user_prompt, None)])
         llm_response[file_name] = next(response)
+
+        llm_file_cache.set(file_name, 'analyse', value=llm_response[file_name])
+
 
     return '阅读完成'
 

@@ -41,28 +41,28 @@ def main(prj_dir):
             with gr.Row():
                 label = gr.Label(label="源码阅读进度", value='等待开始...')
 
-        with gr.Accordion(label='对话模式', open=False):
-            with gr.Tab('论文改写助手'):
-                with gr.Row():
-                    prj_chatbot = gr.Chatbot(label='gpt', elem_id='prg_chatbot')
-                with gr.Row():
-                    prj_chat_txt = gr.Textbox(label='输入框',
-                                              value='总结整个项目',
-                                              placeholder='请输入...',
-                                              container=False,
-                                              interactive=True,
-                                              scale=5,
-                                              elem_id='prg_tb')
-                    prj_chat_btn = gr.Button(value='发送', variant='primary', scale=1, min_width=100)
-            with gr.Tab('论文阅读助手'):
-                with gr.Row():
-                    reader_paper = gr.File(scale=1, elem_id='paper_file')
-                    with gr.Column(scale=2):
-                        with gr.Row():
-                            gr.Chatbot(label='论文阅读', scale=2, elem_id='paper_cb')
-                        with gr.Row():
-                            gr.Text(container=False, scale=2, elem_id='paper_tb', placeholder='请输入...',)
-                            gr.Button('发送', min_width=50, scale=1, variant='primary')
+        # with gr.Accordion(label='对话模式', open=False):
+        #     with gr.Tab('论文改写助手'):
+        #         with gr.Row():
+        #             prj_chatbot = gr.Chatbot(label='gpt', elem_id='prg_chatbot')
+        #         with gr.Row():
+        #             prj_chat_txt = gr.Textbox(label='输入框',
+        #                                       value='总结整个项目',
+        #                                       placeholder='请输入...',
+        #                                       container=False,
+        #                                       interactive=True,
+        #                                       scale=5,
+        #                                       elem_id='prg_tb')
+        #             prj_chat_btn = gr.Button(value='发送', variant='primary', scale=1, min_width=100)
+        #     with gr.Tab('论文阅读助手'):
+        #         with gr.Row():
+        #             reader_paper = gr.File(scale=1, elem_id='paper_file')
+        #             with gr.Column(scale=2):
+        #                 with gr.Row():
+        #                     gr.Chatbot(label='论文阅读', scale=2, elem_id='paper_cb')
+        #                 with gr.Row():
+        #                     gr.Text(container=False, scale=2, elem_id='paper_tb', placeholder='请输入...',)
+        #                     gr.Button('发送', min_width=50, scale=1, variant='primary')
 
         with gr.Accordion(label='代码注释', open=False, elem_id='code_cmt'):
             code_cmt_btn = gr.Button('选择一个源文件', variant='secondary', interactive=False)
@@ -91,8 +91,8 @@ def main(prj_dir):
         prj_fe.change(gr_funcs.view_prj_file, inputs=[prj_fe], outputs=[code, gpt_label, gpt_md])
 
         # 监听 prj_chat_btn 按钮
-        prj_chat_btn.click(gr_funcs.prj_chat, inputs=[prj_chat_txt, prj_chatbot], outputs=[prj_chatbot])
-        prj_chat_btn.click(gr_funcs.clear_textbox, outputs=prj_chat_txt)
+        # prj_chat_btn.click(gr_funcs.prj_chat, inputs=[prj_chat_txt, prj_chatbot], outputs=[prj_chatbot])
+        # prj_chat_btn.click(gr_funcs.clear_textbox, outputs=prj_chat_txt)
 
         # 代码注释模式
         prj_fe.change(gr_funcs.view_uncmt_file, inputs=[prj_fe], outputs=[uncmt_code, code_cmt_btn, cmt_code])
