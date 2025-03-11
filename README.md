@@ -2,12 +2,6 @@
 
 该项目仅用于学习交流，切勿用于商业用途，造成**代码泄露**
 
-欢迎大家关注我的公众号**渡码**，大家使用过程中遇到问题，可以在公众号向我提问。AI相关项目、优秀资料都会在公众号首发。
-
-**公众号回复`key`获取免费共享的`chatgpt api key`国内直接用，免魔法**
-
-<img  src="./docs/images/screen1.png">
-
 **需要 Chat-Code 模式： ChatGPT+本地代码库（embedding）的小伙伴，切换到 v2.0 分支。**
 
 **假期赶着回家开发得比较急，还有很多不完善的地方，节后慢慢更新。**
@@ -48,11 +42,3 @@ python main.py
 4. **关注你的api额度**，一上来尽量不要读文件多、文件大的项目，建议先用小项目试试，关注一下api额度消耗情况。
 
 这个小项目还有很多不完善的地方，欢迎大家提出改进意见，也欢迎大家提交代码
-
-Bilibili：https://space.bilibili.com/494605864
-
-微信公众号：[渡码](http://mp.weixin.qq.com/profile?src=3&timestamp=1663979948&ver=1&signature=wcyNF3yu1W0bMvEanLaDxbZWIzr4fHOGzS3*iP9FBJmGgREoKU6rifDbYefvfJNkEK2r*hS6httmcHBrvtFoVg==)
-
-
-
-<img width="240" src="./docs/images/duma.jpg">
